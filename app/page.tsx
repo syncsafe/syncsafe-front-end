@@ -12,12 +12,8 @@ export default function Home() {
       <div>
         <p>Hello Safe: {safe.safeAddress}</p>
 
-        <Link href="https://app.safe.global/apps/">
-          <Button>Launch (from Safe)</Button>
-        </Link>
-
-        <Link href="/dashboard">
-          <Button>Connect wallet</Button>
+        <Link href="https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fsyncsafe-safe-front-end.vercel.app&chain=eth">
+          <Button>Launch App</Button>
         </Link>
       </div>
     </main>
