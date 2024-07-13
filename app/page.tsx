@@ -7,6 +7,10 @@ import { useSafeAppsSDK } from "@safe-global/safe-apps-react-sdk";
 export default function Home() {
   const { sdk, connected, safe } = useSafeAppsSDK();
 
+  console.log("sdk: " + sdk);
+  console.log("connected: " + connected);
+  console.log("safe: " + safe);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div>
