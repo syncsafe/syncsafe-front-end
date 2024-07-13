@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Krona_One, DM_Sans } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 import Providers from "./providers";
 
-const inter = Inter({ subsets: ["latin"] });
+const krona_one = Krona_One({
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const dm_sans = DM_Sans({
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "SyncSafe",
@@ -18,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={dm_sans.className}>
         <Providers>{children}</Providers>
       </body>
     </html>
