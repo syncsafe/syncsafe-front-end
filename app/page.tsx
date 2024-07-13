@@ -9,13 +9,17 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Link href="/dashboard">
+      <div>
         <p>Hello Safe: {safe.safeAddress}</p>
 
-        <Button>Launch (from Safe)</Button>
+        <Link href="https://app.safe.global/apps/">
+          <Button>Launch (from Safe)</Button>
+        </Link>
 
-        <Button>Connect wallet</Button>
-      </Link>
+        <Link href="/dashboard">
+          <Button>Connect wallet</Button>
+        </Link>
+      </div>
     </main>
   );
 }
