@@ -1,61 +1,15 @@
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
+// Next
 import Image from "next/image";
-import {
-  Bird,
-  Book,
-  Bot,
-  Code2,
-  CornerDownLeft,
-  LifeBuoy,
-  Mic,
-  Paperclip,
-  Rabbit,
-  Settings,
-  Settings2,
-  Share,
-  SquareTerminal,
-  SquareUser,
-  Triangle,
-  Turtle,
-  ChevronLeft,
-  Trash2,
-  Plus,
-  Check,
-  CircleCheck,
-} from "lucide-react";
-import { Search, Camera } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectGroup,
-  SelectLabel,
-} from "@/components/ui/select";
-import { Badge } from "@nextui-org/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CircularProgress, Input as NextInput } from "@nextui-org/react";
+
+// Shadcn
+import { Button } from "@/components/ui/button";
+
+// NextUI
+import { CircularProgress } from "@nextui-org/react";
+
+// Lucide
+import { CircleCheck } from "lucide-react";
 
 export default function Deployment() {
   return (
