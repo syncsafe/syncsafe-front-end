@@ -16,7 +16,7 @@ export default function Home() {
       <div>
         <p>Hello Safe: {safe.safeAddress}</p>
 
-        <Link href="https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fsyncsafe-safe-front-end.vercel.app&chain=eth">
+        <Link href="/dashboard">
           <Button>Launch App</Button>
         </Link>
       </div>
