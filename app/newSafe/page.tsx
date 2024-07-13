@@ -36,6 +36,13 @@ export default function NewSafe() {
             Create a SafeSync
           </legend>
           <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              <div>
+                <h1 className="text-xl font-bold">Name</h1>
+                <p>Choose the name of your Safe Account.</p>
+              </div>
+              <NextInput type="text" label="Name" />
+            </div>
             <div>
               <h1 className="text-xl font-bold">Signers</h1>
               <p>Set the signer wallets of your Safe Account.</p>
