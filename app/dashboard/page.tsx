@@ -28,7 +28,13 @@ import {
 
 // Lucide
 import { Search } from "lucide-react";
-import { CopyPlus, BadgePlus, Link as LinkIcon, Pencil } from "lucide-react";
+import {
+  CopyPlus,
+  BadgePlus,
+  Link as LinkIcon,
+  Pencil,
+  CircleHelp,
+} from "lucide-react";
 
 export default function Dashboard() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -36,7 +42,7 @@ export default function Dashboard() {
   return (
     <main className="flex flex-col justify-between gap-14 p-12">
       <div className="flex flex-row justify-between items-center">
-        <>
+        <div className="flex flex-row gap-3">
           <NextButton
             onPress={onOpen}
             className="bg-black text-white rounded-md"
@@ -69,7 +75,13 @@ export default function Dashboard() {
               )}
             </ModalContent>
           </Modal>
-        </>
+          <Link href="https://www.youtube.com">
+            <NextButton className="rounded-md" variant="flat">
+              <CircleHelp className="size-4" />
+              How to use SafeSync
+            </NextButton>
+          </Link>
+        </div>
 
         <div className="relative">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
