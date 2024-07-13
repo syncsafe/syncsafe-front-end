@@ -210,7 +210,9 @@ export default function NewSafe() {
             </div>
           </div>
           <div className="flex flex-row-reverse">
-            <Button>Deploy</Button>
+            <Link href="/deployment">
+              <Button>Deploy</Button>
+            </Link>
           </div>
         </fieldset>
       </form>
