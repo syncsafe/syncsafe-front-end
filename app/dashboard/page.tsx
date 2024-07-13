@@ -2,11 +2,12 @@
 
 // Next
 import Link from "next/link";
+import React, { useEffect, useState } from "react";
 
 // Shadcn
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { Button as ShadButton } from "@/components/ui/button";
+import { Button, Button as ShadButton } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -36,8 +37,22 @@ import {
   CircleHelp,
 } from "lucide-react";
 
+// SDK
+import { useSafeAppsSDK } from "@safe-global/safe-apps-react-sdk";
+import { useSDK } from "@metamask/sdk-react";
+
 export default function Dashboard() {
+  // const { sdk, connected, safe } = useSafeAppsSDK();
+  const { sdk, account, connected, connecting, provider, chainId } = useSDK();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const connect = async () => {
+    try {
+      await sdk?.connect();
+    } catch (err) {
+      alert("Failed to connect. Please try again.");
+    }
+  };
 
   return (
     <main className="flex flex-col justify-between gap-14 p-12">
@@ -93,11 +108,17 @@ export default function Dashboard() {
         </div>
 
         <div className="flex items-center justify-center gap-2">
-          <p>mathisrgt.eth</p>
-          <Avatar>
-            <AvatarImage src="" alt="" />
-            <AvatarFallback>MS</AvatarFallback>
-          </Avatar>
+          {connected ? (
+            <>
+              <p>{account}</p>
+              <Avatar>
+                <AvatarImage src="" alt="" />
+                <AvatarFallback>{chainId}</AvatarFallback>
+              </Avatar>
+            </>
+          ) : (
+            <Button onClick={connect}>Connect wallet</Button>
+          )}
         </div>
       </div>
 
