@@ -38,8 +38,12 @@ import {
 } from "lucide-react";
 
 // SDK
-import { useSafeAppsSDK } from "@safe-global/safe-apps-react-sdk";
+// import { useSafeAppsSDK } from "@safe-global/safe-apps-react-sdk";
 import { useSDK } from "@metamask/sdk-react";
+import SafeSyncCard from "@/components/SafeSyncCard";
+
+// Local
+import { supportedChainId } from "@/utils/chainid";
 
 export default function Home() {
   // const { sdk, connected, safe } = useSafeAppsSDK();
@@ -73,12 +77,15 @@ export default function Home() {
                     Create a new SafeSync
                   </ModalHeader>
                   <ModalBody className="flex flex-row items-center justify-center mb-2">
-                    <Link href="/linkSafe" className="w-1/2">
-                      <NextButton className="w-full h-20 border-2 bg-white border-0 text-sm bg-black text-white flex flex-col">
-                        <LinkIcon className="size-4" />I already have a Safe
-                        Wallet
-                      </NextButton>
-                    </Link>
+                    {/* <Link href="/linkSafe" className="w-1/2"> */}
+                    <NextButton
+                      className="w-full h-20 border-2 bg-white border-0 text-sm bg-gray-200 text-slate-700 flex flex-col w-1/2"
+                      disabled
+                    >
+                      <LinkIcon className="size-4" />I already have a Safe
+                      Wallet
+                    </NextButton>
+                    {/* </Link> */}
                     <Link href="/newSafe" className="w-1/2">
                       <NextButton className="w-full h-20 border-2 bg-white border-0 text-sm bg-green-400 text-white flex flex-col">
                         <BadgePlus className="size-4" />I want to create a new
@@ -123,60 +130,20 @@ export default function Home() {
       </div>
 
       <div className="flex flex-wrap gap-8">
-        <Card className="w-[350px] flex flex-col justify-between">
-          <CardHeader>
-            <CardTitle>SafeSync n°1</CardTitle>
-            <CardDescription>
-              Deployed on Ethereum ♢, Arbitrum ⚬, Linea
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Some informations about your SafeSync...</p>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <ShadButton>See more</ShadButton>
-            <ShadButton variant="secondary" className="flex gap-2" disabled>
-              <Pencil className="size-3" />
-              Edit
-            </ShadButton>
-          </CardFooter>
-        </Card>
-        <Card className="w-[350px] flex flex-col justify-between">
-          <CardHeader>
-            <CardTitle>SafeSync n°2</CardTitle>
-            <CardDescription>
-              Deployed on Gnosis Chain, Arbitrum ⚬ and Linea
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Some informations about your SafeSync...</p>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <ShadButton>See more</ShadButton>
-            <ShadButton variant="secondary" className="flex gap-2" disabled>
-              <Pencil className="size-3" />
-              Edit
-            </ShadButton>
-          </CardFooter>
-        </Card>
-        <Card className="w-[350px] flex flex-col justify-between">
-          <CardHeader>
-            <CardTitle>SafeSync n°3</CardTitle>
-            <CardDescription>
-              Deployed on Ethereum ♢, Arbitrum ⚬, Linea
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Some informations about your SafeSync...</p>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <ShadButton>See more</ShadButton>
-            <ShadButton variant="secondary" className="flex gap-2" disabled>
-              <Pencil className="size-3" />
-              Edit
-            </ShadButton>
-          </CardFooter>
-        </Card>
+        <SafeSyncCard
+          name={"SafeSync n°1"}
+          chains={[supportedChainId.ethereum, supportedChainId.arbitrum]}
+          signers={[
+            "0x8d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+            "0x7d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+            "0x6d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+            "0x5d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+          ]}
+          status={[
+            { chain: supportedChainId.ethereum, status: "loading" },
+            { chain: supportedChainId.arbitrum, status: "error" },
+          ]}
+        />
       </div>
     </main>
   );

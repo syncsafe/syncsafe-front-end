@@ -1,6 +1,9 @@
+"use client";
+
 // Next
 import Image from "next/image";
 import Link from "next/link";
+import { ChangeEvent, useState } from "react";
 
 // Shadcn
 import { Button } from "@/components/ui/button";
@@ -17,14 +20,57 @@ import {
 // NextUI
 import { Badge } from "@nextui-org/badge";
 import { Input as NextInput } from "@nextui-org/react";
+import { Button as NextButton } from "@nextui-org/button";
 
 // Lucide
 import { Check, ChevronLeft, Plus, Trash2 } from "lucide-react";
+import { supportedChainId } from "@/utils/chainid";
+
+interface Signer {
+  name: string;
+  address: string;
+}
 
 export default function NewSafe() {
+  const [safeName, setSafeName] = useState("");
+  const [signers, setSigners] = useState<Signer[]>([{ name: "", address: "" }]);
+  const [threshold, setThreshold] = useState<number>();
+  const [deployOnEth, setDeployOnEth] = useState(false);
+  const [deployOnArb, setDeployOnArb] = useState(false);
+  const [deployOnBase, setDeployOnBase] = useState(false);
+  const [deployOnScroll, setDeployOnScroll] = useState(false);
+  const [deployOnLinea, setDeployOnLinea] = useState(false);
+
+  function handleInputChange(
+    index: number,
+    event: ChangeEvent<HTMLInputElement>,
+    field: "name" | "address"
+  ) {
+    const value = event.target.value;
+
+    setSigners((prevSigners) => {
+      const newSigners = [...prevSigners];
+      newSigners[index] = {
+        ...newSigners[index],
+        [field]: value,
+      };
+      return newSigners;
+    });
+  }
+
+  function handleAddSigner() {
+    setSigners([...signers, { name: "", address: "" }]);
+  }
+
+  function handleRemoveSigner(index: number) {
+    if (signers.length > 1) {
+      setSigners((prevSigners) => prevSigners.filter((_, i) => i !== index));
+    }
+  }
+
   return (
     <main className="flex flex-col gap-6 p-24">
-      <Link href="/dashboard">
+      <Link href="/">
         <Button variant="outline" size="icon" className="h-7 w-7">
           <ChevronLeft className="h-4 w-4" />
           <span className="sr-only">Back</span>
@@ -48,35 +94,44 @@ export default function NewSafe() {
               <p>Set the signer wallets of your Safe Account.</p>
             </div>
             <div className="flex flex-col gap-4">
-              <div className="flex flex-row gap-3 items-center">
-                <p className="w-1/4">Signer 1</p>
-                <NextInput type="text" label="Name" />
-                <NextInput type="text" label="Address" />
-                <Button>
-                  <Trash2 className="size-4" />
-                </Button>
-              </div>
-              <div className="flex flex-row gap-3 items-center">
-                <p className="w-1/4">Signer 2</p>
-                <NextInput type="text" label="Name" />
-                <NextInput type="text" label="Address" />
-                <Button>
-                  <Trash2 className="size-4" />
-                </Button>
-              </div>
-              <div className="flex flex-row gap-3 items-center">
-                <p className="w-1/4">Signer 3</p>
-                <NextInput type="text" label="Name" />
-                <NextInput type="text" label="Address" />
-                <Button>
-                  <Trash2 className="size-4" />
-                </Button>
-              </div>
+              {signers.map((signer, index) => (
+                <div key={index} className="flex flex-row gap-3 items-center">
+                  <p className="w-1/4">Signer {index + 1}</p>
+                  <NextInput
+                    type="text"
+                    label="Name"
+                    value={signer.name}
+                    onChange={(event) =>
+                      handleInputChange(index, event, "name")
+                    }
+                  />
+                  <NextInput
+                    type="text"
+                    label="Address"
+                    value={signer.address}
+                    onChange={(event) =>
+                      handleInputChange(index, event, "address")
+                    }
+                  />
+                  {signers.length > 1 && (
+                    <NextButton
+                      className="bg-black"
+                      onClick={() => handleRemoveSigner(index)}
+                    >
+                      <Trash2 className="size-4 text-white" />
+                    </NextButton>
+                  )}
+                </div>
+              ))}
               <div>
-                <Button variant="ghost" className="flex gap-2">
+                <NextButton
+                  className="flex gap-2"
+                  onClick={handleAddSigner}
+                  variant="flat"
+                >
                   <Plus className="size-4" />
                   <p>Add new signer</p>
-                </Button>
+                </NextButton>
               </div>
             </div>
           </div>
@@ -93,14 +148,15 @@ export default function NewSafe() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="1">1</SelectItem>
-                    <SelectItem value="2">2</SelectItem>
-                    <SelectItem value="3">3</SelectItem>
-                    <SelectItem value="4">4</SelectItem>
+                    {signers.map((signer, index) => (
+                      <SelectItem value={(index + 1).toString()}>
+                        {index + 1}
+                      </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
-              out of 4 signer(s)
+              out of {signers.length} signer(s)
             </div>
           </div>
 
@@ -112,12 +168,15 @@ export default function NewSafe() {
             <div className="flex gap-5">
               <Badge
                 isOneChar
-                isInvisible={false}
+                isInvisible={!deployOnEth}
                 content={<Check className="size-4" />}
                 placement="bottom-right"
                 className="text-white bg-black w-8 h-8"
               >
-                <Card className="w-[150px] h-[150px] flex flex-col items-center p-6">
+                <Card
+                  className="w-[150px] h-[150px] flex flex-col items-center p-6"
+                  onClick={() => setDeployOnEth(!deployOnEth)}
+                >
                   <CardContent className="flex justify-center items-center h-2/3">
                     <Image
                       src="/chains/ethereum.svg"
@@ -133,12 +192,15 @@ export default function NewSafe() {
               </Badge>
               <Badge
                 isOneChar
-                isInvisible={false}
+                isInvisible={!deployOnArb}
                 content={<Check className="size-4" />}
                 placement="bottom-right"
                 className="text-white bg-black w-8 h-8"
               >
-                <Card className="w-[150px] h-[150px] flex flex-col items-center p-6">
+                <Card
+                  className="w-[150px] h-[150px] flex flex-col items-center p-6"
+                  onClick={() => setDeployOnArb(!deployOnArb)}
+                >
                   <CardContent className="flex justify-center items-center h-2/3">
                     <Image
                       src="/chains/arbitrum.svg"
@@ -152,12 +214,17 @@ export default function NewSafe() {
               </Badge>
               <Badge
                 isOneChar
-                isInvisible={false}
+                isInvisible={!deployOnLinea}
                 content={<Check className="size-4" />}
                 placement="bottom-right"
                 className="text-white bg-black w-8 h-8"
               >
-                <Card className="w-[150px] h-[150px] flex flex-col items-center p-6">
+                <Card
+                  className="w-[150px] h-[150px] flex flex-col items-center p-6"
+                  onClick={() => {
+                    setDeployOnLinea(!deployOnLinea);
+                  }}
+                >
                   <CardContent className="flex justify-center items-center h-2/3">
                     <Image
                       src="/chains/linea.svg"
@@ -171,31 +238,37 @@ export default function NewSafe() {
               </Badge>
               <Badge
                 isOneChar
-                isInvisible={false}
+                isInvisible={!deployOnScroll}
                 content={<Check className="size-4" />}
                 placement="bottom-right"
                 className="text-white bg-black w-8 h-8"
               >
-                <Card className="w-[150px] h-[150px] flex flex-col items-center p-6">
+                <Card
+                  className="w-[150px] h-[150px] flex flex-col items-center p-6"
+                  onClick={() => setDeployOnScroll(!deployOnScroll)}
+                >
                   <CardContent className="flex justify-center items-center h-2/3">
                     <Image
-                      src="/chains/polygon.svg"
+                      src="/chains/scroll.svg"
                       width={25}
                       height={25}
-                      alt="Polygon"
+                      alt="Scroll"
                     />
                   </CardContent>
-                  <CardFooter className="text-sm h-1/3">Polygon</CardFooter>
+                  <CardFooter className="text-sm h-1/3">Scroll</CardFooter>
                 </Card>
               </Badge>
               <Badge
                 isOneChar
-                isInvisible={false}
+                isInvisible={!deployOnBase}
                 content={<Check className="size-4" />}
                 placement="bottom-right"
                 className="text-white bg-black w-8 h-8"
               >
-                <Card className="w-[150px] h-[150px] flex flex-col items-center p-6">
+                <Card
+                  className="w-[150px] h-[150px] flex flex-col items-center p-6"
+                  onClick={() => setDeployOnBase(!deployOnBase)}
+                >
                   <CardContent className="flex justify-center items-center h-2/3">
                     <Image
                       src="/chains/base.svg"

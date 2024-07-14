@@ -43,10 +43,10 @@ import { useSDK } from "@metamask/sdk-react";
 
 interface SafeSyncCardProps {
   name: string;
-  chains: string[];
+  chains: number[];
   signers: string[];
   status: {
-    chain: string;
+    chain: number;
     status: "error" | "loading" | "ok";
   }[];
 }
@@ -64,7 +64,7 @@ export default function SafeSyncCard({ name, chains }: SafeSyncCardProps) {
         <p>Some informations about your SafeSync...</p>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <ShadButton>See more</ShadButton>
+        <ShadButton>Show more</ShadButton>
         <ShadButton variant="secondary" className="flex gap-2" disabled>
           <Pencil className="size-3" />
           Edit
