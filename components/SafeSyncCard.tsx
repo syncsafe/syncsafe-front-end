@@ -51,6 +51,8 @@ import {
   CircleMinus,
   PenTool,
   Book,
+  MapPin,
+  ReceiptText,
 } from "lucide-react";
 import DeploymentBox from "./DeploymentBox";
 import { clickAddress, getExplorerDomain } from "./FormattedAddress";
@@ -64,7 +66,7 @@ interface SafeSyncCardProps {
   threshold: number;
   status: {
     chain: number;
-    status: string; //"error" | "loading" | "ok"
+    status: string;
   }[];
 }
 
@@ -80,10 +82,10 @@ export default function SafeSyncCard({
   let mostCriticalStatus = "ok";
 
   status.forEach((s) => {
-    s.status === "loading" && mostCriticalStatus === "ok"
+    s.status === "sent" && mostCriticalStatus === "done"
       ? (mostCriticalStatus = s.status)
-      : (mostCriticalStatus === "ok" || mostCriticalStatus === "loading") &&
-        s.status === "error"
+      : (mostCriticalStatus === "done" || mostCriticalStatus === "sent") &&
+        s.status === "failed"
       ? (mostCriticalStatus = s.status)
       : "";
   });
@@ -94,11 +96,12 @@ export default function SafeSyncCard({
         <CardHeader>
           <CardTitle className="flex flex-row justify-between">
             {name}
-            {mostCriticalStatus === "ok" && <CircleCheck color="green" />}
-            {mostCriticalStatus === "loading" && (
-              <CircleDotDashed color="orange" />
-            )}
-            {mostCriticalStatus === "error" && <CircleMinus color="red" />}
+            {mostCriticalStatus === "done" && <CircleCheck color="green" />}
+            {mostCriticalStatus === "sent" ||
+              (mostCriticalStatus === "received" && (
+                <CircleDotDashed color="orange" />
+              ))}
+            {mostCriticalStatus === "failed" && <CircleMinus color="red" />}
           </CardTitle>
           <CardDescription className="flex flex-row gap-2 items-center">
             Deployed on{" "}
@@ -140,7 +143,7 @@ export default function SafeSyncCard({
                   src="/chains/scroll.svg"
                   width={15}
                   height={15}
-                  alt="scroll"
+                  alt="Scroll"
                 />
               )}
             </div>
@@ -148,7 +151,7 @@ export default function SafeSyncCard({
         </CardHeader>
         <CardContent>
           <div className="flex gap-4">
-            <Chip radius="sm">${"????.??"}</Chip>
+            <Chip radius="sm">${"1000.00"}</Chip>
             <Chip
               variant="flat"
               avatar={<Avatar name={signers.length.toString()} />}
@@ -180,7 +183,40 @@ export default function SafeSyncCard({
             <>
               <ModalHeader className="flex flex-col gap-1">{name}</ModalHeader>
               <ModalBody>
-                <Accordion type="multiple" collapsible>
+                <Accordion type="multiple">
+                  <AccordionItem value="address">
+                    <AccordionTrigger>
+                      <div className="flex gap-4">
+                        <ReceiptText />
+                        Deployment addresses
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="p-2 pb-4">
+                      <Table aria-label="">
+                        <TableHeader>
+                          <TableColumn key={"chain"}>Chain</TableColumn>
+                          <TableColumn key={"address"}>Address</TableColumn>
+                        </TableHeader>
+                        <TableBody>
+                          {signers.map((signer, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="flex flex-row gap-2">
+                                <Image
+                                  src="/chains/ethereum.svg"
+                                  width={10}
+                                  height={10}
+                                  alt="Ethereum"
+                                />
+                              </TableCell>
+                              <TableCell>
+                                {clickAddress(signer, chains[0])}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </AccordionContent>
+                  </AccordionItem>
                   <AccordionItem value="signers">
                     <AccordionTrigger>
                       <div className="flex gap-4">
@@ -223,13 +259,13 @@ export default function SafeSyncCard({
                   <AccordionItem value="status">
                     <AccordionTrigger>
                       <div className="flex gap-4">
-                        {mostCriticalStatus === "ok" && (
+                        {mostCriticalStatus === "done" && (
                           <CircleCheck color="green" />
                         )}
-                        {mostCriticalStatus === "loading" && (
+                        {mostCriticalStatus === "sent" && (
                           <CircleDotDashed color="orange" />
                         )}
-                        {mostCriticalStatus === "error" && (
+                        {mostCriticalStatus === "failed" && (
                           <CircleMinus color="red" />
                         )}
                         Blockchain status

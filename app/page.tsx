@@ -36,47 +36,87 @@ import { useSDK } from "@metamask/sdk-react";
 // Local
 import { supportedChainId } from "@/utils/chainid";
 import { clickAddress } from "@/components/FormattedAddress";
+import { useEffect, useState } from "react";
+import { getSafeWalletsForOwner } from "@/services/indexer";
 
 export default function Home() {
   // const { sdk, connected, safe } = useSafeAppsSDK();
   const { sdk, account, connected, connecting, provider, chainId } = useSDK();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [safeSyncs, setSafeSyncs] = useState([]);
 
-  const mockedSafeSync = [
-    {
-      chains: [supportedChainId.ethereum, supportedChainId.arbitrum],
-      signers: [
-        "0x8d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-        "0x7d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-        "0x6d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-        "0x5d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-      ],
-      status: [
-        { chain: supportedChainId.ethereum, status: "loading" },
-        { chain: supportedChainId.arbitrum, status: "ok" },
-      ],
-    },
-    {
-      chains: [
-        supportedChainId.base,
-        supportedChainId.linea,
-        supportedChainId.scroll,
-      ],
-      signers: [
-        "0x8d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-        "0x7d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-        "0x6d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-        "0x5d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-        "0x8d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-        "0x7d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-      ],
-      status: [
-        { chain: supportedChainId.base, status: "ok" },
-        { chain: supportedChainId.linea, status: "ok" },
-        { chain: supportedChainId.scroll, status: "error" },
-      ],
-    },
-  ];
+  // const mockedSafeSync = [
+  //   {
+  //     chains: [supportedChainId.ethereum, supportedChainId.arbitrum],
+  //     signers: [
+  //       "0x8d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+  //       "0x7d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+  //       "0x6d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+  //       "0x5d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+  //     ],
+  //     status: [
+  //       { chain: supportedChainId.ethereum, status: "loading" },
+  //       { chain: supportedChainId.arbitrum, status: "ok" },
+  //     ],
+  //   },
+  //   {
+  //     chains: [
+  //       supportedChainId.base,
+  //       supportedChainId.linea,
+  //       supportedChainId.scroll,
+  //     ],
+  //     signers: [
+  //       "0x8d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+  //       "0x7d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+  //       "0x6d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+  //       "0x5d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+  //       "0x8d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+  //       "0x7d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+  //     ],
+  //     status: [
+  //       { chain: supportedChainId.base, status: "done" },
+  //       { chain: supportedChainId.linea, status: "done" },
+  //       { chain: supportedChainId.scroll, status: "done" },
+  //     ],
+  //   },
+  // ];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getSafeWalletsForOwner();
+        console.log("res", response);
+        const data = response?.map((safe: any) => {
+          return {
+            chains: safe.chains,
+            signers: safe.owners,
+            status: safe.chainsSafe.items.map((chainSafe: any) => {
+              return {
+                chain: chainSafe.chainId,
+                status:
+                  chainSafe.localThreshold !== safe.threshold ||
+                  !chainSafe.localOwners.every((a: any) =>
+                    safe.owners.some(
+                      (b: any) => a?.toLowerCase() === b?.toLowerCase()
+                    )
+                  )
+                    ? "sent"
+                    : "done",
+              };
+            }),
+          };
+        });
+        setSafeSyncs(data);
+        console.log("indexer call response: ", response);
+      } catch (error) {
+        console.error("Error fetching safe wallets:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  console.log(safeSyncs);
 
   const connect = async () => {
     try {
@@ -160,8 +200,8 @@ export default function Home() {
         </div>
 
         <div className="flex flex-wrap gap-8">
-          {mockedSafeSync.length > 0 ? (
-            mockedSafeSync.map((safeSync, index) => (
+          {safeSyncs.length > 0 ? (
+            safeSyncs.map((safeSync: any, index) => (
               <SafeSyncCard
                 name={"SafeSync n°" + (index + 1).toString()}
                 chains={safeSync.chains}

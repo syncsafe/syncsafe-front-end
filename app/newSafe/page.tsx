@@ -25,6 +25,7 @@ import { Button as NextButton } from "@nextui-org/button";
 // Lucide
 import { Check, ChevronLeft, Plus, Trash2 } from "lucide-react";
 import { supportedChainId } from "@/utils/chainid";
+import { useSDK } from "@metamask/sdk-react";
 
 interface Signer {
   name: string;
@@ -32,6 +33,8 @@ interface Signer {
 }
 
 export default function NewSafe() {
+  const { sdk, account, connected, connecting, provider, chainId } = useSDK();
+
   const [safeName, setSafeName] = useState("");
   const [signers, setSigners] = useState<Signer[]>([{ name: "", address: "" }]);
   const [threshold, setThreshold] = useState<number>();
@@ -67,6 +70,8 @@ export default function NewSafe() {
       setSigners((prevSigners) => prevSigners.filter((_, i) => i !== index));
     }
   }
+
+  function deploySafe() {}
 
   return (
     <main className="flex flex-col gap-6 p-24">
@@ -284,9 +289,7 @@ export default function NewSafe() {
               </div>
             </div>
             <div className="flex flex-row-reverse">
-              <Link href="/">
-                <Button>Deploy</Button>
-              </Link>
+              <Button onClick={deploySafe}>Deploy</Button>
             </div>
           </fieldset>
         </form>
