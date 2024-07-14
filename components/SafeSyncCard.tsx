@@ -49,9 +49,11 @@ import {
   CircleCheck,
   CircleDotDashed,
   CircleMinus,
+  PenTool,
+  Book,
 } from "lucide-react";
 import DeploymentBox from "./DeploymentBox";
-import { clickAddress } from "./FormattedAddress";
+import { clickAddress, getExplorerDomain } from "./FormattedAddress";
 
 // SDK
 
@@ -180,7 +182,12 @@ export default function SafeSyncCard({
               <ModalBody>
                 <Accordion type="multiple" collapsible>
                   <AccordionItem value="signers">
-                    <AccordionTrigger>Signers</AccordionTrigger>
+                    <AccordionTrigger>
+                      <div className="flex gap-4">
+                        <PenTool />
+                        Signers ({signers.length.toString()})
+                      </div>
+                    </AccordionTrigger>
                     <AccordionContent className="p-2 pb-4">
                       <Table aria-label="">
                         <TableHeader>
@@ -215,7 +222,7 @@ export default function SafeSyncCard({
                   </AccordionItem>
                   <AccordionItem value="status">
                     <AccordionTrigger>
-                      <div className="flex gap-2">
+                      <div className="flex gap-4">
                         {mostCriticalStatus === "ok" && (
                           <CircleCheck color="green" />
                         )}
@@ -233,9 +240,46 @@ export default function SafeSyncCard({
                     </AccordionContent>
                   </AccordionItem>
                   <AccordionItem value="tx">
-                    <AccordionTrigger>Previous transactions</AccordionTrigger>
-                    <AccordionContent>
-                      Display previous transactions...
+                    <AccordionTrigger>
+                      <div className="flex gap-4">
+                        <Book />
+                        Previous transactions
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="p-2">
+                      <Table aria-label="">
+                        <TableHeader>
+                          <TableColumn key={"chain"}>Chain</TableColumn>
+                          <TableColumn key={"block"}>Block</TableColumn>
+                          <TableColumn key={"method"}>Method</TableColumn>
+                          <TableColumn key={"address"}>Address</TableColumn>
+                        </TableHeader>
+                        <TableBody>
+                          {signers.map((signer, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="flex flex-row gap-2">
+                                <Image
+                                  src="/chains/ethereum.svg"
+                                  width={10}
+                                  height={10}
+                                  alt="Ethereum"
+                                />
+                                <Image
+                                  src="/chains/arbitrum.svg"
+                                  width={10}
+                                  height={10}
+                                  alt="Arbitrum"
+                                />
+                              </TableCell>
+                              <TableCell>{"123456"}</TableCell>
+                              <TableCell>{"Approval"}</TableCell>
+                              <TableCell>
+                                {clickAddress(signer, chains[0], true)}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>

@@ -2,6 +2,7 @@
 
 // Next
 import Link from "next/link";
+import Image from "next/image";
 
 // Shadcn
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -86,94 +87,98 @@ export default function Home() {
   };
 
   return (
-    <main className="flex flex-col justify-between gap-14 p-12">
-      <div className="flex flex-row justify-between items-center">
-        <div className="flex flex-row gap-3">
-          <NextButton
-            onPress={onOpen}
-            className="bg-black text-white rounded-md"
-          >
-            <CopyPlus className="size-4" />
-            New
-          </NextButton>
-          <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
-            <ModalContent>
-              {(onClose) => (
-                <>
-                  <ModalHeader className="flex flex-col gap-1 text-center">
-                    Create a new SafeSync
-                  </ModalHeader>
-                  <ModalBody className="flex flex-row items-center justify-center mb-2">
-                    {/* <Link href="/linkSafe" className="w-1/2"> */}
-                    <NextButton
-                      className="w-full h-20 border-2 bg-white border-0 text-sm bg-gray-200 text-slate-700 flex flex-col w-1/2"
-                      disabled
-                    >
-                      <LinkIcon className="size-4" />I already have a Safe
-                      Wallet
-                    </NextButton>
-                    {/* </Link> */}
-                    <Link href="/newSafe" className="w-1/2">
-                      <NextButton className="w-full h-20 border-2 bg-white border-0 text-sm bg-green-400 text-white flex flex-col">
-                        <BadgePlus className="size-4" />I want to create a new
-                        one
+    <main className="flex flex-col justify-between gap-14 p-12 min-h-screen">
+      <div className="flex flex-col gap-14 p-12 mx-10 my-6 bg-white h-[750px] rounded-lg">
+        <div className="flex flex-row justify-between">
+          <div className="flex flex-row gap-3">
+            <div className="flex flex-col gap-2">
+              <NextButton
+                onPress={onOpen}
+                className="bg-black text-white rounded-md"
+              >
+                <CopyPlus className="size-4" />
+                New
+              </NextButton>
+              <Link href="https://www.youtube.com">
+                <NextButton className="rounded-md" variant="flat">
+                  <CircleHelp className="size-4" />
+                  How to use SafeSync
+                </NextButton>
+              </Link>
+            </div>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
+              <ModalContent>
+                {(onClose) => (
+                  <>
+                    <ModalHeader className="flex flex-col gap-1 text-center">
+                      Create a new SafeSync
+                    </ModalHeader>
+                    <ModalBody className="flex flex-row items-center justify-center mb-2">
+                      {/* <Link href="/linkSafe" className="w-1/2"> */}
+                      <NextButton
+                        className="w-full h-20 border-2 bg-white border-0 text-sm bg-gray-200 text-slate-700 flex flex-col w-1/2"
+                        disabled
+                      >
+                        <LinkIcon className="size-4" />I already have a Safe
+                        Wallet
                       </NextButton>
-                    </Link>
-                  </ModalBody>
-                </>
-              )}
-            </ModalContent>
-          </Modal>
-          <Link href="https://www.youtube.com">
-            <NextButton className="rounded-md" variant="flat">
-              <CircleHelp className="size-4" />
-              How to use SafeSync
-            </NextButton>
-          </Link>
+                      {/* </Link> */}
+                      <Link href="/newSafe" className="w-1/2">
+                        <NextButton className="w-full h-20 border-2 bg-white border-0 text-sm bg-green-400 text-white flex flex-col">
+                          <BadgePlus className="size-4" />I want to create a new
+                          one
+                        </NextButton>
+                      </Link>
+                    </ModalBody>
+                  </>
+                )}
+              </ModalContent>
+            </Modal>
+          </div>
+
+          <div>
+            <Image
+              src="/logo/safesync-full-logo.svg"
+              width={150}
+              height={150}
+              alt="SafeSync logo"
+            />
+          </div>
+
+          <div className="flex justify-center gap-2">
+            {connected ? (
+              <>
+                <p>
+                  {account !== undefined &&
+                    clickAddress(account, Number(chainId), true)}
+                </p>
+              </>
+            ) : (
+              <Button onClick={connect}>Connect wallet</Button>
+            )}
+          </div>
         </div>
 
-        <div className="relative">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search..."
-            className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-          />
-        </div>
-
-        <div className="flex items-center justify-center gap-2">
-          {connected ? (
-            <>
-              <p>
-                {account !== undefined &&
-                  clickAddress(account, Number(chainId), true)}
-              </p>
-            </>
+        <div className="flex flex-wrap gap-8">
+          {mockedSafeSync.length > 0 ? (
+            mockedSafeSync.map((safeSync, index) => (
+              <SafeSyncCard
+                name={"SafeSync n°" + (index + 1).toString()}
+                chains={safeSync.chains}
+                signers={safeSync.signers}
+                threshold={2}
+                status={safeSync.status}
+              />
+            ))
           ) : (
-            <Button onClick={connect}>Connect wallet</Button>
+            <div className="flex flex-col gap-4 w-full items-center mt-60">
+              <h1 className="text-xl">No SafeSync found 🍃</h1>
+              <Link href="/newSafe">
+                <Button>Create my first SafeSync</Button>
+              </Link>
+            </div>
           )}
         </div>
-      </div>
-
-      <div className="flex flex-wrap gap-8">
-        {mockedSafeSync.length > 0 ? (
-          mockedSafeSync.map((safeSync, index) => (
-            <SafeSyncCard
-              name={"SafeSync n°" + (index + 1).toString()}
-              chains={safeSync.chains}
-              signers={safeSync.signers}
-              threshold={2}
-              status={safeSync.status}
-            />
-          ))
-        ) : (
-          <div className="flex flex-col gap-4 w-full items-center mt-60">
-            <h1 className="text-xl">No SafeSync found 🍃</h1>
-            <Link href="/newSafe">
-              <Button>Create my first SafeSync</Button>
-            </Link>
-          </div>
-        )}
       </div>
     </main>
   );

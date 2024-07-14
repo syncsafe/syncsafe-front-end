@@ -2,7 +2,7 @@ import { supportedChainId } from "@/utils/chainid";
 import * as React from "react";
 import Image from "next/image";
 
-function getExplorerDomain(chainId: number) {
+export function getExplorerDomain(chainId: number) {
   switch (chainId) {
     case supportedChainId.ethereum:
       return "https://eth.blockscout.com";
@@ -40,7 +40,7 @@ export function clickAddress(
       href={`${getExplorerDomain(chainId)}/address/${address}`}
       target="_blank"
       rel="noreferrer"
-      className="flex gap-2 items-center"
+      className="flex gap-2 items-center "
     >
       {_address}
       <Image
