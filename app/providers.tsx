@@ -49,22 +49,23 @@ export const config = createConfig({
 });
 
 const Providers: FC<any> = ({ children }) => {
-  return (
-    <MetaMaskProvider
-      debug={false}
-      sdkOptions={{
-        dappMetadata: {
-          name: "SafeSync",
-          url: window.location.href,
-        },
-        // infuraAPIKey: process.env.INFURA_API_KEY,
-      }}
-    >
-      <SafeProvider>
-        <NextUIProvider>{children}</NextUIProvider>
-      </SafeProvider>
-    </MetaMaskProvider>
-  );
+  if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
+    return (
+      <MetaMaskProvider
+        debug={false}
+        sdkOptions={{
+          dappMetadata: {
+            name: "SafeSync",
+            url: window.location.href,
+          },
+          // infuraAPIKey: process.env.INFURA_API_KEY,
+        }}>
+        <SafeProvider>
+          <NextUIProvider>{children}</NextUIProvider>
+        </SafeProvider>
+      </MetaMaskProvider>
+    );
+  }
 };
 
 export default Providers;
