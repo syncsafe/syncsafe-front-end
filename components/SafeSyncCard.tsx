@@ -183,7 +183,7 @@ export default function SafeSyncCard({
             <>
               <ModalHeader className="flex flex-col gap-1">{name}</ModalHeader>
               <ModalBody>
-                <Accordion type="multiple">
+                <Accordion type="single">
                   <AccordionItem value="address">
                     <AccordionTrigger>
                       <div className="flex gap-4">
