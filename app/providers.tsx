@@ -5,7 +5,7 @@ import { NextUIProvider } from "@nextui-org/react";
 import SafeProvider from "@safe-global/safe-apps-react-sdk";
 import { MetaMaskProvider } from "@metamask/sdk-react";
 
-import { createConfig, http } from "wagmi";
+import { createConfig, http, WagmiProvider } from "wagmi";
 import {
   mainnet,
   sepolia,
@@ -51,6 +51,7 @@ export const config = createConfig({
 const Providers: FC<any> = ({ children }) => {
   if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
     return (
+      // <WagmiProvider config={config}>
       <MetaMaskProvider
         debug={false}
         sdkOptions={{
@@ -59,11 +60,13 @@ const Providers: FC<any> = ({ children }) => {
             url: window.location.href,
           },
           // infuraAPIKey: process.env.INFURA_API_KEY,
-        }}>
+        }}
+      >
         <SafeProvider>
           <NextUIProvider>{children}</NextUIProvider>
         </SafeProvider>
       </MetaMaskProvider>
+      // </WagmiProvider>
     );
   }
 };

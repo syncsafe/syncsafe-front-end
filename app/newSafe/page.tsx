@@ -71,7 +71,9 @@ export default function NewSafe() {
     }
   }
 
-  function deploySafe() {}
+  function deploySafe(event: React.MouseEvent<HTMLElement>) {
+    event.preventDefault();
+  }
 
   return (
     <main className="flex flex-col gap-6 p-24">
