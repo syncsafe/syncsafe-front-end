@@ -283,7 +283,7 @@ export default function NewSafe() {
             </div>
           </div>
           <div className="flex flex-row-reverse">
-            <Link href="/deployment">
+            <Link href="/">
               <Button>Deploy</Button>
             </Link>
           </div>

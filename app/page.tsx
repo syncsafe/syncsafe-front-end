@@ -2,45 +2,35 @@
 
 // Next
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
 
 // Shadcn
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Button, Button as ShadButton } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 // NextUI
 import {
   Modal,
+  ModalBody,
   ModalContent,
   ModalHeader,
-  ModalBody,
-  useDisclosure,
   Button as NextButton,
+  useDisclosure,
 } from "@nextui-org/react";
 
 // Lucide
-import { Search } from "lucide-react";
 import {
-  CopyPlus,
   BadgePlus,
-  Link as LinkIcon,
-  Pencil,
   CircleHelp,
+  CopyPlus,
+  Link as LinkIcon,
+  Search,
 } from "lucide-react";
 
 // SDK
 // import { useSafeAppsSDK } from "@safe-global/safe-apps-react-sdk";
-import { useSDK } from "@metamask/sdk-react";
 import SafeSyncCard from "@/components/SafeSyncCard";
+import { useSDK } from "@metamask/sdk-react";
 
 // Local
 import { supportedChainId } from "@/utils/chainid";
@@ -49,6 +39,42 @@ export default function Home() {
   // const { sdk, connected, safe } = useSafeAppsSDK();
   const { sdk, account, connected, connecting, provider, chainId } = useSDK();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const mockedSafeSync = [
+    {
+      chains: [supportedChainId.ethereum, supportedChainId.arbitrum],
+      signers: [
+        "0x8d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+        "0x7d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+        "0x6d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+        "0x5d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+      ],
+      status: [
+        { chain: supportedChainId.ethereum, status: "loading" },
+        { chain: supportedChainId.arbitrum, status: "ok" },
+      ],
+    },
+    {
+      chains: [
+        supportedChainId.base,
+        supportedChainId.linea,
+        supportedChainId.scroll,
+      ],
+      signers: [
+        "0x8d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+        "0x7d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+        "0x6d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+        "0x5d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+        "0x8d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+        "0x7d1b8a701b3ce393b63b1b29c39e22450cec5c21",
+      ],
+      status: [
+        { chain: supportedChainId.base, status: "ok" },
+        { chain: supportedChainId.linea, status: "ok" },
+        { chain: supportedChainId.scroll, status: "error" },
+      ],
+    },
+  ];
 
   const connect = async () => {
     try {
@@ -119,8 +145,8 @@ export default function Home() {
             <>
               <p>{account}</p>
               <Avatar>
-                <AvatarImage src="" alt="" />
-                <AvatarFallback>{chainId}</AvatarFallback>
+                <AvatarImage src="/logo/safesync-icon-logo.png" alt="" />
+                <AvatarFallback>{"ME"}</AvatarFallback>
               </Avatar>
             </>
           ) : (
@@ -130,20 +156,24 @@ export default function Home() {
       </div>
 
       <div className="flex flex-wrap gap-8">
-        <SafeSyncCard
-          name={"SafeSync n°1"}
-          chains={[supportedChainId.ethereum, supportedChainId.arbitrum]}
-          signers={[
-            "0x8d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-            "0x7d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-            "0x6d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-            "0x5d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-          ]}
-          status={[
-            { chain: supportedChainId.ethereum, status: "loading" },
-            { chain: supportedChainId.arbitrum, status: "error" },
-          ]}
-        />
+        {mockedSafeSync.length > 0 ? (
+          mockedSafeSync.map((safeSync, index) => (
+            <SafeSyncCard
+              name={"SafeSync n°" + (index + 1).toString()}
+              chains={safeSync.chains}
+              signers={safeSync.signers}
+              threshold={2}
+              status={safeSync.status}
+            />
+          ))
+        ) : (
+          <div className="flex flex-col gap-4 w-full items-center mt-60">
+            <h1 className="text-xl">No SafeSync found 🍃</h1>
+            <Link href="/newSafe">
+              <Button>Create my first SafeSync</Button>
+            </Link>
+          </div>
+        )}
       </div>
     </main>
   );

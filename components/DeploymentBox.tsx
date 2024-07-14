@@ -45,7 +45,7 @@ import { supportedChainId } from "@/utils/chainid";
 
 interface DeploymentProgressBarProps {
   chain: number;
-  progress: "sent" | "received" | "validated" | "done" | "failed";
+  progress: string; // "sent" | "received" | "validated" | "done" | "failed";
 }
 
 function DeploymentProgressBar({
@@ -53,10 +53,10 @@ function DeploymentProgressBar({
   progress,
 }: DeploymentProgressBarProps) {
   return (
-    <div className="flex flex-row items-center gap-4 w-full justify-between">
-      <div className="flex flex-row items-center gap-4 w-1/2 justify-between">
+    <div className="flex flex-row items-center gap-4 w-full justify-between mb-4">
+      <div className="flex flex-row flex-wrap items-center gap-2 w-1/2 justify-between">
         {chain === supportedChainId.ethereum && (
-          <p className="flex gap-2">
+          <p className="flex gap-2 text-lg">
             <Image
               src="/chains/ethereum.svg"
               width={10}
@@ -68,7 +68,7 @@ function DeploymentProgressBar({
         )}
 
         {chain === supportedChainId.arbitrum && (
-          <p className="flex gap-2">
+          <p className="flex gap-2 text-lg">
             <Image
               src="/chains/arbitrum.svg"
               width={10}
@@ -80,21 +80,21 @@ function DeploymentProgressBar({
         )}
 
         {chain === supportedChainId.base && (
-          <p className="flex gap-2">
+          <p className="flex gap-2 text-lg">
             <Image src="/chains/base.svg" width={10} height={10} alt="Base" />{" "}
             Base
           </p>
         )}
 
         {chain === supportedChainId.linea && (
-          <p className="flex gap-2">
+          <p className="flex gap-2 text-lg">
             <Image src="/chains/linea.svg" width={10} height={10} alt="Linea" />{" "}
             Linea
           </p>
         )}
 
         {chain === supportedChainId.scroll && (
-          <p className="flex gap-2">
+          <p className="flex gap-2 text-lg">
             <Image
               src="/chains/scroll.svg"
               width={10}
@@ -195,67 +195,23 @@ function DeploymentProgressBar({
           </Avatar>
         </div>
       </div>
-      {progress === "failed" && <Button>Resend</Button>}
     </div>
   );
 }
 
-interface DeploymentBoxProps {}
+interface DeploymentBoxProps {
+  status: {
+    chain: number;
+    status: string; //"error" | "loading" | "ok" "sent" | "received" | "validated" | "done" | "failed";
+  }[];
+}
 
-export default function DeploymentBox() {
+export default function DeploymentBox({ status }: DeploymentBoxProps) {
   return (
-    <>
-      <form className="grid w-full items-start gap-6 w-1/2">
-        <fieldset className="grid gap-6 rounded-lg border py-4 px-8 flex items-center justify-center">
-          <div className="flex flex-col gap-6">
-            <div className="flex items-center gap-4">
-              <CircularProgress color="warning" aria-label="Loading..." />
-              <p className="flex gap-2">Deploying on Linea...</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <CircularProgress color="warning" aria-label="Loading..." />
-              <p className="flex gap-2">Deploying on Arbitrum...</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <CircleCheck className="size-10" color="green" />
-
-              <p className="flex gap-2">
-                Deployed on{" "}
-                <Image
-                  src="/chains/ethereum.svg"
-                  width={10}
-                  height={10}
-                  alt="Ethereum"
-                />{" "}
-                Ethereum
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center justify-center">
-            <Link href="/">
-              <Button>Back to dashboard</Button>
-            </Link>
-          </div>
-        </fieldset>
-      </form>
-
-      <DeploymentProgressBar
-        chain={supportedChainId.ethereum}
-        progress={"failed"}
-      />
-      <DeploymentProgressBar
-        chain={supportedChainId.arbitrum}
-        progress={"sent"}
-      />
-      <DeploymentProgressBar
-        chain={supportedChainId.base}
-        progress={"received"}
-      />
-      <DeploymentProgressBar
-        chain={supportedChainId.scroll}
-        progress={"validated"}
-      />
-      <DeploymentProgressBar chain={supportedChainId.linea} progress={"done"} />
-    </>
+    <div className="flex flex-col flex-wrap justify-between items-center w-full h-full">
+      {status.map((status) => (
+        <DeploymentProgressBar chain={status.chain} progress={status.status} />
+      ))}
+    </div>
   );
 }
