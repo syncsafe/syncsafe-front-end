@@ -34,6 +34,7 @@ import { useSDK } from "@metamask/sdk-react";
 
 // Local
 import { supportedChainId } from "@/utils/chainid";
+import { clickAddress } from "@/components/FormattedAddress";
 
 export default function Home() {
   // const { sdk, connected, safe } = useSafeAppsSDK();
@@ -143,11 +144,10 @@ export default function Home() {
         <div className="flex items-center justify-center gap-2">
           {connected ? (
             <>
-              <p>{account}</p>
-              <Avatar>
-                <AvatarImage src="/logo/safesync-icon-logo.png" alt="" />
-                <AvatarFallback>{"ME"}</AvatarFallback>
-              </Avatar>
+              <p>
+                {account !== undefined &&
+                  clickAddress(account, Number(chainId), true)}
+              </p>
             </>
           ) : (
             <Button onClick={connect}>Connect wallet</Button>

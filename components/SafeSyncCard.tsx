@@ -13,11 +13,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { supportedChainId } from "@/utils/chainid";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 // NextUI
 import {
-  Accordion,
-  AccordionItem,
   Avatar,
   Button,
   Chip,
@@ -27,6 +31,13 @@ import {
   ModalFooter,
   ModalHeader,
   useDisclosure,
+  Table,
+  getKeyValue,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
 } from "@nextui-org/react";
 
 // Lucide
@@ -40,6 +51,7 @@ import {
   CircleMinus,
 } from "lucide-react";
 import DeploymentBox from "./DeploymentBox";
+import { clickAddress } from "./FormattedAddress";
 
 // SDK
 
@@ -166,20 +178,65 @@ export default function SafeSyncCard({
             <>
               <ModalHeader className="flex flex-col gap-1">{name}</ModalHeader>
               <ModalBody>
-                <Accordion selectionMode="multiple">
-                  <AccordionItem
-                    key="1"
-                    aria-label="Blockchain status"
-                    title="Blockchain status"
-                  >
-                    <DeploymentBox status={status} />
+                <Accordion type="multiple" collapsible>
+                  <AccordionItem value="signers">
+                    <AccordionTrigger>Signers</AccordionTrigger>
+                    <AccordionContent className="p-2 pb-4">
+                      <Table aria-label="">
+                        <TableHeader>
+                          <TableColumn key={"chain"}>Chain</TableColumn>
+                          <TableColumn key={"address"}>Address</TableColumn>
+                        </TableHeader>
+                        <TableBody>
+                          {signers.map((signer, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="flex flex-row gap-2">
+                                <Image
+                                  src="/chains/ethereum.svg"
+                                  width={10}
+                                  height={10}
+                                  alt="Ethereum"
+                                />
+                                <Image
+                                  src="/chains/arbitrum.svg"
+                                  width={10}
+                                  height={10}
+                                  alt="Arbitrum"
+                                />
+                              </TableCell>
+                              <TableCell>
+                                {clickAddress(signer, chains[0])}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </AccordionContent>
                   </AccordionItem>
-                  <AccordionItem
-                    key="2"
-                    aria-label="Last transactions"
-                    title="Last transactions"
-                  >
-                    Last transactions
+                  <AccordionItem value="status">
+                    <AccordionTrigger>
+                      <div className="flex gap-2">
+                        {mostCriticalStatus === "ok" && (
+                          <CircleCheck color="green" />
+                        )}
+                        {mostCriticalStatus === "loading" && (
+                          <CircleDotDashed color="orange" />
+                        )}
+                        {mostCriticalStatus === "error" && (
+                          <CircleMinus color="red" />
+                        )}
+                        Blockchain status
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <DeploymentBox status={status} />
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="tx">
+                    <AccordionTrigger>Previous transactions</AccordionTrigger>
+                    <AccordionContent>
+                      Display previous transactions...
+                    </AccordionContent>
                   </AccordionItem>
                 </Accordion>
               </ModalBody>
