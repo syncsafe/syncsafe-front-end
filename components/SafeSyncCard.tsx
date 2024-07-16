@@ -56,6 +56,7 @@ import {
 } from "lucide-react";
 import DeploymentBox from "./DeploymentBox";
 import { clickAddress, getExplorerDomain } from "./FormattedAddress";
+import { useEffect } from "react";
 
 // SDK
 
@@ -79,7 +80,7 @@ export default function SafeSyncCard({
 }: SafeSyncCardProps) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  let mostCriticalStatus = "ok";
+  let mostCriticalStatus = "done";
 
   status.forEach((s) => {
     s.status === "sent" && mostCriticalStatus === "done"
@@ -88,6 +89,10 @@ export default function SafeSyncCard({
         s.status === "failed"
       ? (mostCriticalStatus = s.status)
       : "";
+  });
+
+  useEffect(() => {
+    console.log("chains:", chains);
   });
 
   return (
@@ -106,7 +111,8 @@ export default function SafeSyncCard({
           <CardDescription className="flex flex-row gap-2 items-center">
             Deployed on{" "}
             <div className="flex gap-2">
-              {chains.includes(supportedChainId.ethereum) && (
+              {(chains.includes(supportedChainId.ethereum) ||
+                chains.includes(supportedChainId.ethsepolia)) && (
                 <Image
                   src="/chains/ethereum.svg"
                   width={10}
@@ -114,7 +120,8 @@ export default function SafeSyncCard({
                   alt="Ethereum"
                 />
               )}
-              {chains.includes(supportedChainId.arbitrum) && (
+              {(chains.includes(supportedChainId.arbitrum) ||
+                chains.includes(supportedChainId.arbsepolia)) && (
                 <Image
                   src="/chains/arbitrum.svg"
                   width={15}
@@ -122,7 +129,8 @@ export default function SafeSyncCard({
                   alt="Arbitrum"
                 />
               )}
-              {chains.includes(supportedChainId.base) && (
+              {(chains.includes(supportedChainId.base) ||
+                chains.includes(supportedChainId.basesepolia)) && (
                 <Image
                   src="/chains/base.svg"
                   width={15}
@@ -200,7 +208,7 @@ export default function SafeSyncCard({
                         <TableBody>
                           {signers.map((signer, index) => (
                             <TableRow key={index}>
-                              <TableCell className="flex flex-row gap-2">
+                              <TableCell className="flex flex-row gap-2 items-center justify-center">
                                 <Image
                                   src="/chains/ethereum.svg"
                                   width={10}

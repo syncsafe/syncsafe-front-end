@@ -37,7 +37,7 @@ export function clickAddress(
 
   return (
     <a
-      href={`${getExplorerDomain(chainId)}/address/${address}`}
+      href={`${getExplorerDomain(0x1)}/address/${address}`}
       target="_blank"
       rel="noreferrer"
       className="flex gap-2 items-center "

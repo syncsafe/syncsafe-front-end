@@ -55,7 +55,8 @@ function DeploymentProgressBar({
   return (
     <div className="flex flex-row items-center gap-4 w-full justify-between mb-4">
       <div className="flex flex-row flex-wrap items-center gap-2 w-1/2 justify-between">
-        {chain === supportedChainId.ethereum && (
+        {(chain === supportedChainId.ethereum ||
+          chain === supportedChainId.ethsepolia) && (
           <p className="flex gap-2 text-md">
             <Image
               src="/chains/ethereum.svg"
@@ -67,7 +68,8 @@ function DeploymentProgressBar({
           </p>
         )}
 
-        {chain === supportedChainId.arbitrum && (
+        {(chain === supportedChainId.arbitrum ||
+          chain === supportedChainId.arbsepolia) && (
           <p className="flex gap-2 text-md">
             <Image
               src="/chains/arbitrum.svg"
@@ -79,7 +81,8 @@ function DeploymentProgressBar({
           </p>
         )}
 
-        {chain === supportedChainId.base && (
+        {(chain === supportedChainId.base ||
+          chain === supportedChainId.basesepolia) && (
           <p className="flex gap-2 text-md">
             <Image src="/chains/base.svg" width={10} height={10} alt="Base" />{" "}
             Base

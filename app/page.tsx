@@ -29,7 +29,6 @@ import {
 } from "lucide-react";
 
 // SDK
-// import { useSafeAppsSDK } from "@safe-global/safe-apps-react-sdk";
 import SafeSyncCard from "@/components/SafeSyncCard";
 import { useSDK } from "@metamask/sdk-react";
 
@@ -37,49 +36,12 @@ import { useSDK } from "@metamask/sdk-react";
 import { supportedChainId } from "@/utils/chainid";
 import { clickAddress } from "@/components/FormattedAddress";
 import { useEffect, useState } from "react";
-import { getSafeWalletsForOwner } from "@/services/indexer";
+import { getSafeWalletsForOwner } from "@/services/graphql/indexer";
 
 export default function Home() {
-  // const { sdk, connected, safe } = useSafeAppsSDK();
   const { sdk, account, connected, connecting, provider, chainId } = useSDK();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [safeSyncs, setSafeSyncs] = useState([]);
-
-  // const mockedSafeSync = [
-  //   {
-  //     chains: [supportedChainId.ethereum, supportedChainId.arbitrum],
-  //     signers: [
-  //       "0x8d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-  //       "0x7d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-  //       "0x6d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-  //       "0x5d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-  //     ],
-  //     status: [
-  //       { chain: supportedChainId.ethereum, status: "loading" },
-  //       { chain: supportedChainId.arbitrum, status: "ok" },
-  //     ],
-  //   },
-  //   {
-  //     chains: [
-  //       supportedChainId.base,
-  //       supportedChainId.linea,
-  //       supportedChainId.scroll,
-  //     ],
-  //     signers: [
-  //       "0x8d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-  //       "0x7d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-  //       "0x6d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-  //       "0x5d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-  //       "0x8d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-  //       "0x7d1b8a701b3ce393b63b1b29c39e22450cec5c21",
-  //     ],
-  //     status: [
-  //       { chain: supportedChainId.base, status: "done" },
-  //       { chain: supportedChainId.linea, status: "done" },
-  //       { chain: supportedChainId.scroll, status: "done" },
-  //     ],
-  //   },
-  // ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -211,7 +173,7 @@ export default function Home() {
               />
             ))
           ) : (
-            <div className="flex flex-col gap-4 w-full items-center mt-60">
+            <div className="flex flex-col gap-4 w-full items-center mt-44">
               <h1 className="text-xl">No SafeSync found 🍃</h1>
               <Link href="/newSafe">
                 <Button>Create my first SafeSync</Button>
