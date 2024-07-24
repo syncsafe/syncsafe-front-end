@@ -5,9 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 // Shadcn
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 // NextUI
 import {
@@ -25,7 +23,6 @@ import {
   CircleHelp,
   CopyPlus,
   Link as LinkIcon,
-  Search,
 } from "lucide-react";
 
 // SDK
@@ -33,7 +30,6 @@ import SafeSyncCard from "@/components/SafeSyncCard";
 import { useSDK } from "@metamask/sdk-react";
 
 // Local
-import { supportedChainId } from "@/utils/chainid";
 import { clickAddress } from "@/components/FormattedAddress";
 import { useEffect, useState } from "react";
 import { getSafeWalletsForOwner } from "@/services/graphql/indexer";

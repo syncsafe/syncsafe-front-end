@@ -157,7 +157,7 @@ export default function NewSafe() {
       address: "0x8991690990Ea0A47B41c67c7Fa82d717387eAcD9",
       abi: syncSafeModuleAbi,
       functionName: "initDeployProxy",
-      value: parseEther("0.002"),
+      value: parseEther("0.0005"),
       args: [
         singleton,
         _signers,
