@@ -3,7 +3,7 @@
 // Next
 import Image from "next/image";
 import Link from "next/link";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 // Shadcn
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,12 @@ import { Check, ChevronLeft, Plus, Trash2 } from "lucide-react";
 import { supportedChainId } from "@/utils/chainid";
 import { useSDK } from "@metamask/sdk-react";
 
+// Wagmi
+import { useSwitchChain, useWriteContract } from "wagmi";
+import { syncSafeModuleAbi } from "@/lib/SyncSafeModule";
+import { Address, parseEther } from "viem";
+import { arbitrum, base, linea, mainnet } from "viem/chains";
+
 interface Signer {
   name: string;
   address: string;
@@ -37,17 +43,24 @@ export default function NewSafe() {
 
   const [safeName, setSafeName] = useState("");
   const [signers, setSigners] = useState<Signer[]>([{ name: "", address: "" }]);
-  const [threshold, setThreshold] = useState<number>();
+  const [threshold, setThreshold] = useState<number>(1);
   const [deployOnEth, setDeployOnEth] = useState(false);
   const [deployOnArb, setDeployOnArb] = useState(false);
   const [deployOnBase, setDeployOnBase] = useState(false);
   const [deployOnScroll, setDeployOnScroll] = useState(false);
   const [deployOnLinea, setDeployOnLinea] = useState(false);
 
+  const { writeContract, error } = useWriteContract();
+  const { chains, switchChain } = useSwitchChain();
+
+  useEffect(() => {
+    console.log("error", error);
+  }, [error]);
+
   function handleInputChange(
     index: number,
     event: ChangeEvent<HTMLInputElement>,
-    field: "name" | "address"
+    field: "name" | "address",
   ) {
     const value = event.target.value;
 
@@ -71,8 +84,90 @@ export default function NewSafe() {
     }
   }
 
-  function deploySafe(event: React.MouseEvent<HTMLElement>) {
+  function getEids() {
+    const eids: number[] = [];
+
+    if (deployOnEth) {
+      eids.push(30101);
+    }
+    if (deployOnArb) {
+      eids.push(30110);
+    }
+    if (deployOnLinea) {
+      eids.push(30183);
+    }
+    if (deployOnBase) {
+      eids.push(30184);
+    }
+
+    return eids;
+  }
+
+  async function getChainIdToDeployOn() {
+    // TODO check user gas token balance
+
+    if (deployOnLinea) {
+      return linea.id;
+    }
+    if (deployOnBase) {
+      return base.id;
+    }
+    if (deployOnArb) {
+      return arbitrum.id;
+    }
+    return mainnet.id;
+  }
+
+  function validAddresses(add: string[]): add is Address[] {
+    return !add.some((el) => /^0x[a-fA-F0-9]{40}$/.test(el) === false);
+  }
+
+  async function deploySafe(event: React.MouseEvent<HTMLElement>) {
     event.preventDefault();
+
+    const _signers = signers.map((s) => s.address);
+
+    if (!connected) {
+      alert("You need to connect your wallet");
+      return;
+    }
+
+    if (
+      threshold === undefined ||
+      threshold === 0 ||
+      threshold > signers.length ||
+      !validAddresses(_signers)
+    ) {
+      alert("Bad configuration");
+      return;
+    }
+
+    const singleton: Address = "0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552";
+
+    const _chainId = await getChainIdToDeployOn();
+
+    if (chainId !== _chainId.toString()) {
+      switchChain({
+        chainId: _chainId,
+      });
+    }
+
+    writeContract({
+      chainId: _chainId,
+      address: "0x8991690990Ea0A47B41c67c7Fa82d717387eAcD9",
+      abi: syncSafeModuleAbi,
+      functionName: "initDeployProxy",
+      value: parseEther("0.002"),
+      args: [
+        singleton,
+        _signers,
+        BigInt(threshold),
+        BigInt("12341234123412341234"), // random string
+        getEids(),
+      ],
+    });
+
+    // TODO what do we do after ?
   }
 
   return (
@@ -150,7 +245,9 @@ export default function NewSafe() {
                 <p>Any transaction requires the confirmation of...</p>
               </div>
               <div className="flex items-center gap-2 mt-2">
-                <Select>
+                <Select
+                  onValueChange={(value) => setThreshold(parseInt(value))}
+                >
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="1" />
                   </SelectTrigger>
@@ -174,30 +271,6 @@ export default function NewSafe() {
                 <p>Choose the chains you want to deploy on.</p>
               </div>
               <div className="flex gap-5">
-                <Badge
-                  isOneChar
-                  isInvisible={!deployOnEth}
-                  content={<Check className="size-4" />}
-                  placement="bottom-right"
-                  className="text-white bg-black w-8 h-8"
-                >
-                  <Card
-                    className="w-[150px] h-[150px] flex flex-col items-center p-6"
-                    onClick={() => setDeployOnEth(!deployOnEth)}
-                  >
-                    <CardContent className="flex justify-center items-center h-2/3">
-                      <Image
-                        src="/chains/ethereum.svg"
-                        width={25}
-                        height={25}
-                        alt="Ethereum"
-                      />
-                    </CardContent>
-                    <CardFooter className="text-sm p-0 h-1/3">
-                      Ethereum
-                    </CardFooter>
-                  </Card>
-                </Badge>
                 <Badge
                   isOneChar
                   isInvisible={!deployOnArb}
@@ -244,28 +317,7 @@ export default function NewSafe() {
                     <CardFooter className="text-sm h-1/3">Linea</CardFooter>
                   </Card>
                 </Badge>
-                <Badge
-                  isOneChar
-                  isInvisible={!deployOnScroll}
-                  content={<Check className="size-4" />}
-                  placement="bottom-right"
-                  className="text-white bg-black w-8 h-8"
-                >
-                  <Card
-                    className="w-[150px] h-[150px] flex flex-col items-center p-6"
-                    onClick={() => setDeployOnScroll(!deployOnScroll)}
-                  >
-                    <CardContent className="flex justify-center items-center h-2/3">
-                      <Image
-                        src="/chains/scroll.svg"
-                        width={25}
-                        height={25}
-                        alt="Scroll"
-                      />
-                    </CardContent>
-                    <CardFooter className="text-sm h-1/3">Scroll</CardFooter>
-                  </Card>
-                </Badge>
+
                 <Badge
                   isOneChar
                   isInvisible={!deployOnBase}
@@ -286,6 +338,60 @@ export default function NewSafe() {
                       />
                     </CardContent>
                     <CardFooter className="text-sm h-1/3">Base</CardFooter>
+                  </Card>
+                </Badge>
+                <Badge
+                  isOneChar
+                  isInvisible={!deployOnEth}
+                  content={<Check className="size-4" />}
+                  placement="bottom-right"
+                  className="text-white bg-black w-8 h-8"
+                >
+                  <Card
+                    className="w-[150px] h-[150px] flex flex-col items-center p-6 opacity-30"
+                    // onClick={() => setDeployOnEth(!deployOnEth)}
+                    title="Coming soon"
+                  >
+                    <CardContent className="flex justify-center items-center h-2/3">
+                      <Image
+                        src="/chains/ethereum.svg"
+                        width={25}
+                        height={25}
+                        alt="Ethereum"
+                      />
+                    </CardContent>
+                    <CardFooter className="text-sm p-0 h-1/3">
+                      Ethereum
+                    </CardFooter>
+                    <CardFooter className="text-xs whitespace-nowrap text-gray-800">
+                      Coming soon
+                    </CardFooter>
+                  </Card>
+                </Badge>
+                <Badge
+                  isOneChar
+                  isInvisible={!deployOnScroll}
+                  content={<Check className="size-4" />}
+                  placement="bottom-right"
+                  className="text-white bg-black w-8 h-8"
+                >
+                  <Card
+                    className="w-[150px] h-[150px] flex flex-col items-center p-6 opacity-30"
+                    // onClick={() => setDeployOnScroll(!deployOnScroll)}
+                    title="Coming soon"
+                  >
+                    <CardContent className="flex justify-center items-center h-2/3">
+                      <Image
+                        src="/chains/scroll.svg"
+                        width={25}
+                        height={25}
+                        alt="Scroll"
+                      />
+                    </CardContent>
+                    <CardFooter className="text-sm h-1/3">Scroll</CardFooter>
+                    <CardFooter className="text-xs whitespace-nowrap text-gray-800">
+                      Coming soon
+                    </CardFooter>
                   </Card>
                 </Badge>
               </div>

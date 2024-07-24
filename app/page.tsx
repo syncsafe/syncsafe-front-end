@@ -59,8 +59,8 @@ export default function Home() {
                   chainSafe.localThreshold !== safe.threshold ||
                   !chainSafe.localOwners.every((a: any) =>
                     safe.owners.some(
-                      (b: any) => a?.toLowerCase() === b?.toLowerCase()
-                    )
+                      (b: any) => a?.toLowerCase() === b?.toLowerCase(),
+                    ),
                   )
                     ? "sent"
                     : "done",

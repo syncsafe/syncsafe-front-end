@@ -2,73 +2,59 @@
 
 import { FC } from "react";
 import { NextUIProvider } from "@nextui-org/react";
-import SafeProvider from "@safe-global/safe-apps-react-sdk";
 import { MetaMaskProvider } from "@metamask/sdk-react";
 
 import { createConfig, http, WagmiProvider } from "wagmi";
-import {
-  mainnet,
-  sepolia,
-  arbitrum,
-  arbitrumSepolia,
-  base,
-  baseSepolia,
-  scroll,
-  scrollSepolia,
-  linea,
-  lineaSepolia,
-} from "wagmi/chains";
+import { mainnet, sepolia, arbitrum, base, linea } from "wagmi/chains";
 import { metaMask } from "wagmi/connectors";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const MetaMaskOptions = {
   dappMetadata: {
     name: "Example Wagmi dapp",
   },
-  //infuraAPIKey: "YOUR-API-KEY",
-  // Other options.
+  infuraAPIKey: process.env.NEXT_PUBLIC_INFURA_API_KEY,
 };
 
 export const config = createConfig({
-  chains: [mainnet, sepolia],
+  chains: [mainnet, arbitrum, base, linea],
   connectors: [
     metaMask(MetaMaskOptions),
     // Other connectors
   ],
   transports: {
     [mainnet.id]: http(),
-    [sepolia.id]: http(),
     [arbitrum.id]: http(),
-    [arbitrumSepolia.id]: http(),
     [base.id]: http(),
-    [baseSepolia.id]: http(),
-    [scroll.id]: http(),
-    [scrollSepolia.id]: http(),
     [linea.id]: http(),
-    [lineaSepolia.id]: http(),
   },
 });
 
 const Providers: FC<any> = ({ children }) => {
-  if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
-    return (
-      // <WagmiProvider config={config}>
+  // if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
+
+  const queryClient = new QueryClient();
+
+  return (
+    <QueryClientProvider client={queryClient}>
       <MetaMaskProvider
-        debug={false}
+        debug={true}
         sdkOptions={{
           dappMetadata: {
             name: "SafeSync",
-            url: window.location.href,
+            url:
+              typeof window === "undefined" ? undefined : window.location.href,
           },
-          // infuraAPIKey: process.env.INFURA_API_KEY,
+          infuraAPIKey: process.env.NEXT_PUBLIC_INFURA_API_KEY,
         }}
       >
-        <SafeProvider>
+        <WagmiProvider config={config}>
           <NextUIProvider>{children}</NextUIProvider>
-        </SafeProvider>
+        </WagmiProvider>
       </MetaMaskProvider>
-      // </WagmiProvider>
-    );
-  }
+    </QueryClientProvider>
+  );
+  // }
 };
 
 export default Providers;
