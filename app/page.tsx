@@ -137,7 +137,7 @@ export default function Home() {
 
           <div>
             <Image
-              src="/logo/syncSafe-full-logo.svg"
+              src="/logo/syncsafe-full-logo.svg"
               width={150}
               height={150}
               alt="SyncSafe logo"
