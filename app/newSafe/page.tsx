@@ -182,7 +182,7 @@ export default function NewSafe() {
         <form className="grid w-full items-start gap-6">
           <fieldset className="grid gap-6 rounded-lg border py-4 px-8">
             <legend className="-ml-1 px-1 text-sm font-medium">
-              Create a SafeSync
+              Create a SyncSafe
             </legend>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-2">

@@ -100,7 +100,7 @@ export default function Home() {
               <Link href="https://www.youtube.com">
                 <NextButton className="rounded-md" variant="flat">
                   <CircleHelp className="size-4" />
-                  How to use SafeSync
+                  How to use SyncSafe
                 </NextButton>
               </Link>
             </div>
@@ -109,7 +109,7 @@ export default function Home() {
                 {(onClose) => (
                   <>
                     <ModalHeader className="flex flex-col gap-1 text-center">
-                      Create a new SafeSync
+                      Create a new SyncSafe
                     </ModalHeader>
                     <ModalBody className="flex flex-row items-center justify-center mb-2">
                       {/* <Link href="/linkSafe" className="w-1/2"> */}
@@ -139,7 +139,7 @@ export default function Home() {
               src="/logo/safesync-full-logo.svg"
               width={150}
               height={150}
-              alt="SafeSync logo"
+              alt="SyncSafe logo"
             />
           </div>
 
@@ -161,7 +161,7 @@ export default function Home() {
           {safeSyncs.length > 0 ? (
             safeSyncs.map((safeSync: any, index) => (
               <SafeSyncCard
-                name={"SafeSync n°" + (index + 1).toString()}
+                name={"SyncSafe n°" + (index + 1).toString()}
                 chains={safeSync.chains}
                 signers={safeSync.signers}
                 threshold={2}
@@ -170,9 +170,9 @@ export default function Home() {
             ))
           ) : (
             <div className="flex flex-col gap-4 w-full items-center mt-44">
-              <h1 className="text-xl">No SafeSync found 🍃</h1>
+              <h1 className="text-xl">No SyncSafe found 🍃</h1>
               <Link href="/newSafe">
-                <Button>Create my first SafeSync</Button>
+                <Button>Create my first SyncSafe</Button>
               </Link>
             </div>
           )}
