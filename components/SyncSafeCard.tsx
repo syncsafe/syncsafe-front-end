@@ -60,7 +60,7 @@ import { useEffect } from "react";
 
 // SDK
 
-interface SafeSyncCardProps {
+interface SyncSafeCardProps {
   name: string;
   chains: number[];
   signers: string[];
@@ -71,13 +71,13 @@ interface SafeSyncCardProps {
   }[];
 }
 
-export default function SafeSyncCard({
+export default function SyncSafeCard({
   name,
   chains,
   signers,
   threshold,
   status,
-}: SafeSyncCardProps) {
+}: SyncSafeCardProps) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   let mostCriticalStatus = "done";

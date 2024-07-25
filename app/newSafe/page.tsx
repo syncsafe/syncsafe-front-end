@@ -72,7 +72,7 @@ export default function NewSafe() {
   function handleInputChange(
     index: number,
     event: ChangeEvent<HTMLInputElement>,
-    field: "name" | "address",
+    field: "name" | "address"
   ) {
     const value = event.target.value;
 
