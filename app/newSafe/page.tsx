@@ -57,6 +57,18 @@ export default function NewSafe() {
     console.log("error", error);
   }, [error]);
 
+  const connect = async () => {
+    try {
+      await sdk?.connect();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    connect();
+  }, [connected]);
+
   function handleInputChange(
     index: number,
     event: ChangeEvent<HTMLInputElement>,
@@ -127,10 +139,10 @@ export default function NewSafe() {
 
     const _signers = signers.map((s) => s.address);
 
-    if (!connected) {
-      alert("You need to connect your wallet");
-      return;
-    }
+    // if (!connected) {
+    //   alert("You need to connect your wallet");
+    //   return;
+    // }
 
     if (
       threshold === undefined ||
