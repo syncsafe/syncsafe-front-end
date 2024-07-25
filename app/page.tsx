@@ -38,7 +38,7 @@ import { getSafeWalletsForOwner } from "@/services/graphql/indexer";
 export default function Home() {
   const { sdk, account, connected, connecting, provider, chainId } = useSDK();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [safeSyncs, setSyncSafes] = useState([]);
+  const [syncSafes, setSyncSafes] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,7 +75,7 @@ export default function Home() {
     fetchData();
   }, []);
 
-  console.log(safeSyncs);
+  console.log(syncSafes);
 
   const connect = async () => {
     try {
@@ -137,7 +137,7 @@ export default function Home() {
 
           <div>
             <Image
-              src="/logo/safesync-full-logo.svg"
+              src="/logo/syncSafe-full-logo.svg"
               width={150}
               height={150}
               alt="SyncSafe logo"
@@ -159,14 +159,14 @@ export default function Home() {
         </div>
 
         <ScrollShadow className="flex flex-wrap gap-8">
-          {safeSyncs.length > 0 ? (
-            safeSyncs.map((safeSync: any, index) => (
+          {syncSafes.length > 0 ? (
+            syncSafes.map((syncSafe: any, index) => (
               <SyncSafeCard
                 name={"SyncSafe n°" + (index + 1).toString()}
-                chains={safeSync.chains}
-                signers={safeSync.signers}
+                chains={syncSafe.chains}
+                signers={syncSafe.signers}
                 threshold={2}
-                status={safeSync.status}
+                status={syncSafe.status}
               />
             ))
           ) : (
