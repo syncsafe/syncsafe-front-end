@@ -86,9 +86,9 @@ export default function SyncSafeCard({
     s.status === "sent" && mostCriticalStatus === "done"
       ? (mostCriticalStatus = s.status)
       : (mostCriticalStatus === "done" || mostCriticalStatus === "sent") &&
-        s.status === "failed"
-      ? (mostCriticalStatus = s.status)
-      : "";
+          s.status === "failed"
+        ? (mostCriticalStatus = s.status)
+        : "";
   });
 
   useEffect(() => {
@@ -159,19 +159,19 @@ export default function SyncSafeCard({
         </CardHeader>
         <CardContent>
           <div className="flex gap-4">
-            <Chip radius="sm">${"1000.00"}</Chip>
+            {/* <Chip radius="sm">${"1000.00"}</Chip> */}
             <Chip
               variant="flat"
               avatar={<Avatar name={signers.length.toString()} />}
             >
-              Signers
+              Signer{signers.length > 1 ? "s" : ""}
             </Chip>
-            <Chip
+            {/* <Chip
               variant="flat"
               avatar={<Avatar name={Number(threshold).toString()} />}
             >
               Thresholds
-            </Chip>
+            </Chip> */}
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
