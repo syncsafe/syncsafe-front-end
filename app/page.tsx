@@ -38,7 +38,7 @@ import { getSafeWalletsForOwner } from "@/services/graphql/indexer";
 export default function Home() {
   const { sdk, account, connected, connecting, provider, chainId } = useSDK();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [syncSafes, setSyncSafes] = useState([]);
+  const [syncSafes, setSyncSafes] = useState([] as any[]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -160,15 +160,19 @@ export default function Home() {
 
         <ScrollShadow className="flex flex-wrap gap-8">
           {syncSafes.length > 0 ? (
-            syncSafes.map((syncSafe: any, index) => (
-              <SyncSafeCard
-                name={"SyncSafe n°" + (index + 1).toString()}
-                chains={syncSafe.chains}
-                signers={syncSafe.signers}
-                threshold={2}
-                status={syncSafe.status}
-              />
-            ))
+            syncSafes
+              .filter((syncSafe) => {
+                return syncSafe.signers.includes(account);
+              })
+              .map((syncSafe: any, index) => (
+                <SyncSafeCard
+                  name={"SyncSafe n°" + (index + 1).toString()}
+                  chains={syncSafe.chains}
+                  signers={syncSafe.signers}
+                  threshold={2}
+                  status={syncSafe.status}
+                />
+              ))
           ) : (
             <div className="flex flex-col gap-4 w-full items-center mt-44">
               <h1 className="text-xl">No SyncSafe found 🍃</h1>
