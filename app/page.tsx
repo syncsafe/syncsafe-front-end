@@ -159,7 +159,9 @@ export default function Home() {
         </div>
 
         <ScrollShadow className="flex flex-wrap gap-8">
-          {syncSafes.length > 0 ? (
+          {syncSafes.filter((syncSafe) => {
+            return syncSafe.signers.includes(account);
+          }).length > 0 ? (
             syncSafes
               .filter((syncSafe) => {
                 return syncSafe.signers.includes(account);
