@@ -15,6 +15,7 @@ import {
   ModalHeader,
   Button as NextButton,
   useDisclosure,
+  ScrollShadow,
 } from "@nextui-org/react";
 
 // Lucide
@@ -55,8 +56,8 @@ export default function Home() {
                   chainSafe.localThreshold !== safe.threshold ||
                   !chainSafe.localOwners.every((a: any) =>
                     safe.owners.some(
-                      (b: any) => a?.toLowerCase() === b?.toLowerCase(),
-                    ),
+                      (b: any) => a?.toLowerCase() === b?.toLowerCase()
+                    )
                   )
                     ? "sent"
                     : "done",
@@ -157,7 +158,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-8">
+        <ScrollShadow className="flex flex-wrap gap-8">
           {safeSyncs.length > 0 ? (
             safeSyncs.map((safeSync: any, index) => (
               <SafeSyncCard
@@ -176,7 +177,7 @@ export default function Home() {
               </Link>
             </div>
           )}
-        </div>
+        </ScrollShadow>
       </div>
     </main>
   );
