@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 
 // SDK
-import SafeSyncCard from "@/components/SafeSyncCard";
+import SyncSafeCard from "@/components/SyncSafeCard";
 import { useSDK } from "@metamask/sdk-react";
 
 // Local
@@ -38,7 +38,7 @@ import { getSafeWalletsForOwner } from "@/services/graphql/indexer";
 export default function Home() {
   const { sdk, account, connected, connecting, provider, chainId } = useSDK();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [safeSyncs, setSafeSyncs] = useState([]);
+  const [safeSyncs, setSyncSafes] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,7 +65,7 @@ export default function Home() {
             }),
           };
         });
-        setSafeSyncs(data);
+        setSyncSafes(data);
         console.log("indexer call response: ", response);
       } catch (error) {
         console.error("Error fetching safe wallets:", error);
@@ -101,7 +101,7 @@ export default function Home() {
               <Link href="https://www.youtube.com">
                 <NextButton className="rounded-md" variant="flat">
                   <CircleHelp className="size-4" />
-                  How to use SafeSync
+                  How to use SyncSafe
                 </NextButton>
               </Link>
             </div>
@@ -110,7 +110,7 @@ export default function Home() {
                 {(onClose) => (
                   <>
                     <ModalHeader className="flex flex-col gap-1 text-center">
-                      Create a new SafeSync
+                      Create a new SyncSafe
                     </ModalHeader>
                     <ModalBody className="flex flex-row items-center justify-center mb-2">
                       {/* <Link href="/linkSafe" className="w-1/2"> */}
@@ -140,7 +140,7 @@ export default function Home() {
               src="/logo/safesync-full-logo.svg"
               width={150}
               height={150}
-              alt="SafeSync logo"
+              alt="SyncSafe logo"
             />
           </div>
 
@@ -161,8 +161,8 @@ export default function Home() {
         <ScrollShadow className="flex flex-wrap gap-8">
           {safeSyncs.length > 0 ? (
             safeSyncs.map((safeSync: any, index) => (
-              <SafeSyncCard
-                name={"SafeSync n°" + (index + 1).toString()}
+              <SyncSafeCard
+                name={"SyncSafe n°" + (index + 1).toString()}
                 chains={safeSync.chains}
                 signers={safeSync.signers}
                 threshold={2}
@@ -171,9 +171,9 @@ export default function Home() {
             ))
           ) : (
             <div className="flex flex-col gap-4 w-full items-center mt-44">
-              <h1 className="text-xl">No SafeSync found 🍃</h1>
+              <h1 className="text-xl">No SyncSafe found 🍃</h1>
               <Link href="/newSafe">
-                <Button>Create my first SafeSync</Button>
+                <Button>Create my first SyncSafe</Button>
               </Link>
             </div>
           )}

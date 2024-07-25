@@ -41,7 +41,7 @@ const Providers: FC<any> = ({ children }) => {
         debug={true}
         sdkOptions={{
           dappMetadata: {
-            name: "SafeSync",
+            name: "SyncSafe",
             url:
               typeof window === "undefined" ? undefined : window.location.href,
           },
